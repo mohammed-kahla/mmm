@@ -23,7 +23,7 @@ button{font:inherit;color:inherit}
 #gc{display:flex;flex-direction:column;gap:6px}
 #pd{display:flex;gap:10px;align-items:flex-end}
 .p{border:0;border-radius:18px;font-weight:900;font-size:15px;touch-action:none}
-.p.g{width:80px;height:130px;background:#2fa86a}.p.b{width:72px;height:90px;background:#d44a3a}
+.p.g{width:80px;height:130px;background:#2fa86a}.p.d{width:64px;height:70px;background:#e08a1e}.p.d.on{background:#ffd23f;color:#2a1740;outline:3px solid #fff}.p.b{width:72px;height:90px;background:#d44a3a}
 #ov{position:fixed;inset:0;display:flex;overflow:auto;background:linear-gradient(rgba(15,25,45,.6),rgba(15,25,45,.85))}
 .in{margin:auto;max-width:560px;width:100%;padding:16px;text-align:center;box-sizing:border-box}
 .code{display:flex;gap:8px;justify-content:center}
@@ -39,7 +39,7 @@ h1{font-size:clamp(38px,10vw,62px);font-weight:900;margin:6px 0}
 #rot{display:none;position:fixed;top:calc(env(safe-area-inset-top,0px) + 70px);left:50%;transform:translateX(-50%);background:var(--g);border-radius:12px;padding:6px 14px;font-size:13px;white-space:nowrap}
 @media (orientation:portrait){#rot{display:block}}
 @media (orientation:landscape){#gar{grid-template-columns:repeat(3,1fr)}h1{font-size:34px}}
-@media (max-height:500px){#wh{width:100px;height:100px}.p.g{height:100px}.p.b{height:70px}#gc button{padding:4px 10px}}
+@media (max-height:500px){#wh{width:100px;height:100px}.p.g{height:100px}.p.b{height:70px}.p.d{height:56px}#gc button{padding:4px 10px}}
 #mo{position:fixed;inset:0;background:rgba(15,25,45,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;z-index:5}#mo[hidden]{display:none}#mc{border-radius:12px;touch-action:none}#mh{font-size:14px}#mx{background:var(--sun);color:#2a1740;border:0;border-radius:999px;padding:8px 26px;font-weight:900}
 #ar{display:flex;align-items:center;gap:8px;direction:rtl;margin-top:4px}#ar[hidden]{display:none}#ar svg{width:28px;height:28px}#ad{font-size:12px;font-weight:900}
 #rot{top:calc(env(safe-area-inset-top,0px) + 180px)}
@@ -119,7 +119,7 @@ h1{font-size:clamp(38px,10vw,62px);font-weight:900;margin:6px 0}
 <svg id="wh" viewBox="0 0 128 128"><circle cx="64" cy="64" r="54" fill="none" stroke="#fff7e6" stroke-width="12" opacity=".85"/><path d="M12 64H116M64 64V116" stroke="#fff7e6" stroke-width="9" opacity=".85"/><circle cx="64" cy="64" r="14" fill="#ffb347"/><rect x="58" y="6" width="12" height="14" fill="#d44a3a"/><rect x="57" y="3" width="14" height="18" rx="4" fill="#ffb347"/><circle cx="64" cy="64" r="9" fill="#fff7e6" opacity=".9"/></svg>
 <div id="ak"><button data-a="l">◀</button><button data-a="r">▶</button></div>
 <div id="gc"><button data-s="1">▲</button><button id="mt">أوتو</button><button data-s="-1">▼</button><button id="rv">R</button></div>
-<div id="pd"><button class="p b" data-k="b">فرامل<br>رجوع</button><button class="p g" data-k="g">بنزين</button></div>
+<div id="pd"><button class="p d" id="dbt">درفت</button><button class="p b" data-k="b">فرامل<br>رجوع</button><button class="p g" data-k="g">بنزين</button></div>
 </div>
 <div id="fpsd" hidden></div><div id="vp" hidden><div id="vc2"></div></div><div id="gtoast" hidden></div><div id="stp" hidden></div>
 <canvas id="mm" width="240" height="240" hidden></canvas>
@@ -247,12 +247,13 @@ const nearR=D.roads.filter(r=>r[0]>=8&&r[1].length>=6&&Math.hypot(r[1][0]-START[
 for(let q=0;q<45&&nearR.length;q++){const r=nearR[Math.floor(Math.random()*nearR.length)],f=r[1],cum=[0];for(let i=2;i<f.length;i+=2)cum.push(cum[cum.length-1]+Math.hypot(f[i]-f[i-2],f[i+1]-f[i-1]));tr.push({f,cum,L:cum[cum.length-1],t:Math.random()*cum[cum.length-1],d:Math.random()<.5?1:-1,v:8+Math.random()*7,m:mk(['#e9e2d0','#5b6fd6','#e0b341','#c44f7a','#8a8f98'][q%5],0,['sed','lan','ela'][q%3],1),x:0,z:0})}
 function trUpd(dt){tr.forEach(a=>{const h=a.hit>0;if(h){a.hit-=dt;if(a.sp){a.ox=(a.ox||0)+a.kx*Math.min(8,a.sp*.4);a.oz=(a.oz||0)+a.kz*Math.min(8,a.sp*.4);a.sp=0}}else{a.t+=a.d*a.v*dt;a.ox=(a.ox||0)*.9;a.oz=(a.oz||0)*.9}if(a.t<0||a.t>a.L){a.d=-a.d;a.t=Math.max(0,Math.min(a.L,a.t))}let i=1;while(i<a.cum.length-1&&a.cum[i]<a.t)i++;const k=(i-1)*2,x1=a.f[k],z1=a.f[k+1],x2=a.f[k+2],z2=a.f[k+3],sl=(a.cum[i]-a.cum[i-1])||1,u=(a.t-a.cum[i-1])/sl,fx=a.d*(x2-x1)/sl,fz=a.d*(z2-z1)/sl;a.x=x1+(x2-x1)*u-fz*2.2+(a.ox||0);a.z=z1+(z2-z1)*u+fx*2.2+(a.oz||0);a.m.rotation.y=Math.atan2(-fx,-fz);a.m.rotation.z=h?Math.sin(a.hit*28)*.16:0;a.m.position.set(a.x,0,a.z);a.m.visible=(a.x-S.x)**2+(a.z-S.z)**2<67600})}
 
-const K={g:0,b:0,l:0,r:0,h:0,w:null},km={ArrowUp:'g',w:'g',ArrowDown:'b',s:'b',ArrowLeft:'l',a:'l',ArrowRight:'r',d:'r',' ':'h'};
+const K={g:0,b:0,l:0,r:0,h:0,dr:0,w:null},km={ArrowUp:'g',w:'g',ArrowDown:'b',s:'b',ArrowLeft:'l',a:'l',ArrowRight:'r',d:'r',' ':'h'};
 const shift=d=>{if(!S.auto){S.g=Math.max(1,Math.min(6,S.g+d));S.sl=.25}};
 function tog(a){S.auto=a;$('mt').textContent=a?'أوتو':'مانوال';document.querySelectorAll('#md button').forEach(x=>x.classList.toggle('on',(x.dataset.m==='1')===a))}
-addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(km[k]){K[km[k]]=1;e.preventDefault()}else if(k==='e')shift(1);else if(k==='q')shift(-1);else if(k==='m')tog(!S.auto);else if(k==='c')view^=1;else if(k==='r')rv(!S.rev)});
+addEventListener('keydown',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(km[k]){K[km[k]]=1;e.preventDefault()}else if(k==='Shift'){if(!e.repeat)dtog()}else if(k==='e')shift(1);else if(k==='q')shift(-1);else if(k==='m')tog(!S.auto);else if(k==='c')view^=1;else if(k==='r')rv(!S.rev)});
 addEventListener('keyup',e=>{const k=e.key.length===1?e.key.toLowerCase():e.key;if(km[k])K[km[k]]=0});
 document.querySelectorAll('[data-k]').forEach(b=>{const k=b.dataset.k;b.addEventListener('pointerdown',e=>{e.preventDefault();K[k]=1;b.setPointerCapture(e.pointerId)});['pointerup','pointercancel'].forEach(t=>b.addEventListener(t,()=>K[k]=0))});
+const dtog=()=>{K.dr=K.dr?0:1;$('dbt').classList.toggle('on',!!K.dr);say(K.dr?'🔥 الدرفت شغّال':'الدرفت اتقفل')};$('dbt').addEventListener('pointerdown',e=>{e.preventDefault();dtog()});
 document.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>shift(+b.dataset.s));
 function rv(o){S.rev=o;$('rv').style.background=o?'#d44a3a':''}$('rv').onclick=()=>rv(!S.rev);$('mt').onclick=()=>tog(!S.auto);$('cmb').onclick=()=>view^=1;
 document.querySelectorAll('#md button').forEach(b=>b.onclick=()=>tog(b.dataset.m==='1'));
@@ -286,11 +287,17 @@ b.innerHTML='<canvas class="pvc" width="240" height="135"></canvas><b>'+(lk?'�
 b.onclick=()=>{if(lk){if(PB!==c.n){PB=c.n;rg();return}PB='';if(money<c.p){bal.textContent='❌ فلوسك مش كفاية — ناقصك '+Math.round(c.p-money).toLocaleString('en-US')+' جنيه';return}money-=c.p;sv();OWN.add(c.n);try{localStorage.setItem('dm_ow',JSON.stringify([...OWN]))}catch(e){}setCar(c);rg();bal.textContent='🎉 مبروك! اشتريت '+c.n;return}PB='';setCar(c);rg()};g.appendChild(b);PVL.push([b.firstChild,c])})}
 rg();
 $('go').onclick=()=>{try{if(!AC)snd()}catch(e){}try{const de=document.documentElement;Promise.resolve(de.requestFullscreen&&de.requestFullscreen()).then(()=>screen.orientation.lock('landscape')).catch(()=>{})}catch(e){}state=1;$('ov').style.display='none';$('ctl').hidden=false;$('hud').hidden=false};
-$('gb').onclick=()=>{state=0;S.v=0;if(gn)gn.gain.value=0;if(ng)ng.gain.value=0;$('ov').style.display='flex';$('ctl').hidden=true;$('hud').hidden=true;rg()};
+$('gb').onclick=()=>{state=0;S.v=0;if(gn)gn.gain.value=0;if(ng)ng.gain.value=0;if(EN&&EN.gs)EN.gs.gain.value=0;$('ov').style.display='flex';$('ctl').hidden=true;$('hud').hidden=true;rg()};
 
 const GR=[0,.15,.28,.43,.6,.79,1],GM=g=>car.k/3.6*GR[g]*1.03;
+let DRP=null,DRI=0;
+function drFx(dt,sd){S.sa=sd;
+if(!DRP){DRP=[];const mt=new THREE.MeshBasicMaterial({color:0xdddddd,transparent:true,opacity:0,depthWrite:false}),ge=new THREE.SphereGeometry(.7,6,5);for(let i=0;i<28;i++){const m=new THREE.Mesh(ge,mt.clone());m.visible=false;m.userData.l=0;sc.add(m);DRP.push(m)}}
+const on=Math.abs(sd)>.28&&Math.abs(S.v)>8&&!S.fly&&!(S.y>0);
+if(on){S.dtm=(S.dtm||0)+dt;if(S.dtm>.04){S.dtm=0;const c=Math.cos(S.h),sn=Math.sin(S.h);for(const q of[-1,1]){const m=DRP[DRI++%DRP.length];m.position.set(S.x+sn*2.3+q*c*.9,.5,S.z+c*2.3-q*sn*.9);m.userData.l=.9;m.scale.setScalar(.6);m.visible=true}}if(!S.dd){S.dd=1;say('🔥 درفت!')}}else if(Math.abs(sd)<.12)S.dd=0;
+for(const m of DRP){if(m.userData.l>0){m.userData.l-=dt;m.position.y+=dt*1.2;m.scale.addScalar(dt*3);m.material.opacity=Math.max(0,m.userData.l)*.55;if(m.userData.l<=0)m.visible=false}}}
 function upd(dt){
-const f=[-Math.sin(S.h),-Math.cos(S.h)],rt=[Math.cos(S.h),-Math.sin(S.h)],gas=K.g&&S.fuel>0,br=K.b||K.h,gm=GM(S.g);
+const f=[-Math.sin(S.h),-Math.cos(S.h)],rt=[Math.cos(S.h),-Math.sin(S.h)],gas=K.g&&S.fuel>0,dd=(K.h||(K.dr&&gas))&&S.v>8&&!S.rev,br=K.b||(K.h&&!(dd&&gas)),gm=GM(S.g);
 S.rpm=900+Math.min(1,Math.abs(S.v)/gm)*6100;
 S.sl=Math.max(0,S.sl-dt);if(S.auto&&S.sl<=0){if(S.rpm>6200&&S.g<6){S.g++;S.sl=.25}else if(S.rpm<2200&&S.g>1){S.g--;S.sl=.25}}
 let a=0;if(br&&!K.h&&!gas&&S.v<.5)S.bt+=dt;else S.bt=0;
@@ -298,9 +305,15 @@ if(S.rev){if(gas)a=S.v>.3?-14:(S.v>-12?-5:0)}else if(gas&&S.v>=-.3){if(S.v<gm)a=
 if(br){if(S.bt>.35){if(S.v>-12)a=-5}else if(Math.abs(S.v)>.4)a-=Math.sign(S.v)*(K.h?20:14);else S.v=0}else if(!gas)a-=Math.sign(S.v)*(.6+(7-S.g)*.25);
 a-=Math.sign(S.v)*.00008*S.v*S.v;S.v+=a*dt;if(!gas&&!br&&Math.abs(S.v)<.3)S.v=0;
 const tg=K.w!==null?K.w:K.r-K.l;S.st+=(tg-S.st)*Math.min(1,dt*(K.w!==null?20:6));
-S.h-=(S.v/2.7)*Math.tan(S.st*.6/(1+Math.abs(S.v)*.06))*dt;
-const nx=S.x+f[0]*S.v*dt,nz=S.z+f[1]*S.v*dt;
-if(solid(nx+f[0]*2.2,nz+f[1]*2.2)||solid(nx-f[0]*2.2,nz-f[1]*2.2)||solid(nx+rt[0],nz+rt[1])||solid(nx-rt[0],nz-rt[1]))S.v*=-.25;else{S.x=nx;S.z=nz}
+S.dr=(S.dr||0)+((dd?1:0)-(S.dr||0))*Math.min(1,dt*6);const ls=Math.abs(S.st)*Math.abs(S.v);
+S.h-=(S.v/2.7)*Math.tan(S.st*.6/(1+Math.abs(S.v)*.06))*(1+.6*S.dr)*dt;
+let sd=S.md===undefined?0:S.h-S.md;sd=Math.atan2(Math.sin(sd),Math.cos(sd));
+if(S.md===undefined||Math.abs(sd)>1.25||S.v<3){S.md=S.h;sd=0}
+S.md+=sd*Math.min(1,dt*(S.dr>.3?1.5:Math.max(4,12-Math.max(0,ls-24)*.3)));
+sd=S.h-S.md;sd=Math.atan2(Math.sin(sd),Math.cos(sd));if(S.v>3)S.v*=1-.25*Math.min(1,Math.abs(sd))*dt;
+const g=[-Math.sin(S.md),-Math.cos(S.md)],nx=S.x+g[0]*S.v*dt,nz=S.z+g[1]*S.v*dt;
+if(solid(nx+g[0]*2.2,nz+g[1]*2.2)||solid(nx-g[0]*2.2,nz-g[1]*2.2)||solid(nx+rt[0],nz+rt[1])||solid(nx-rt[0],nz-rt[1])){S.v*=-.25;S.md=S.h}else{S.x=nx;S.z=nz}
+drFx(dt,sd);
 tr.forEach(t=>{const dx=S.x-t.x,dz=S.z-t.z,d=Math.hypot(dx,dz);if(d<3.4&&d>0){const sp=Math.abs(S.v);S.v*=.5;S.x+=dx/d*(3.4-d);S.z+=dz/d*(3.4-d);if(!(t.hit>0)){t.hit=2.5;t.sp=sp;t.kx=-dx/d;t.kz=-dz/d;say('خبطت عربية!')}}});
 S.fuel=car.own?100:Math.max(0,S.fuel-dt*(.04+(gas?S.rpm/7000*.2:0))*car.k/250*(car.f1?1.4:1));
 if(ST.some(s=>Math.hypot(S.x-s[0],S.z-s[1])<25)&&Math.abs(S.v)<4){const ad=Math.min(100-S.fuel,dt*15,money/1.5);if(ad>0){S.fuel+=ad;money-=ad*1.5;say('بتتموّن...')}else if(S.fuel<99&&money<1.5)say('مفيش فلوس كفاية للبنزين')}
@@ -313,16 +326,55 @@ const ns=()=>Math.min(...ST.map(s=>Math.hypot(S.x-s[0],S.z-s[1])));
 function say(t){msg=t;msgT=3}function sv(){try{localStorage.setItem('dm_m',String(Math.round(money)))}catch(e){}}
 function newMis(){const R_=D.rp,n=R_.length/3,pick=(cx,cz,r)=>{for(let k=0;k<80;k++){const i=Math.floor(Math.random()*n)*3;if(Math.hypot(R_[i]-cx,R_[i+1]-cz)<r)return[R_[i],R_[i+1]]}const i=Math.floor(Math.random()*n)*3;return[R_[i],R_[i+1]]},a=pick(S.x,S.z,900),b=pick(a[0],a[1],3500),d=Math.hypot(a[0]-S.x,a[1]-S.z)+Math.hypot(b[0]-a[0],b[1]-a[1]);mis={s:0,a,b,t:d/12+30,r:Math.round(150+d*.5)}}
 let o2,fl,ng;
-function snd(){AC=new(window.AudioContext||window.webkitAudioContext)();osc=AC.createOscillator();osc.type='sawtooth';o2=AC.createOscillator();o2.type='square';const g2=AC.createGain();g2.gain.value=.45;
-const ws=AC.createWaveShaper(),cv2=new Float32Array(256);for(let i=0;i<256;i++)cv2[i]=Math.tanh((i/128-1)*2.2);ws.curve=cv2;
-fl=AC.createBiquadFilter();fl.type='lowpass';fl.Q.value=2;gn=AC.createGain();gn.gain.value=0;
-osc.connect(ws);o2.connect(g2);g2.connect(ws);ws.connect(fl);fl.connect(gn);gn.connect(AC.destination);
-const nb=AC.createBuffer(1,AC.sampleRate,AC.sampleRate),dd=nb.getChannelData(0);for(let i=0;i<dd.length;i++)dd[i]=Math.random()*2-1;
-const ns2=AC.createBufferSource();ns2.buffer=nb;ns2.loop=true;const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=700;ng=AC.createGain();ng.gain.value=0;ns2.connect(bp);bp.connect(ng);ng.connect(AC.destination);
-osc.start();o2.start();ns2.start();AC.resume()}
-function snu(){const t=AC.currentTime,cy=car.f1?10:car.k>=420?16:car.k>=300?8:car.k>=250?6:4,r=car.f1?900+(S.rpm-900)*2.3:S.rpm,f=r/60*cy/2,th=K.g&&S.fuel>0?1:0;
-osc.frequency.setTargetAtTime(f,t,.06);o2.frequency.setTargetAtTime(f/2,t,.06);fl.frequency.setTargetAtTime(350+f*3+th*900,t,.08);
-gn.gain.setTargetAtTime(snOn&&S.fuel>0?(.05+.09*th+.02*(S.rpm-900)/6100)*SD.vol:0,t,.05);ng.gain.setTargetAtTime(snOn?Math.min(.08,Math.abs(S.v)/80*.08)*SD.vol:0,t,.1)}
+let EN=null;
+const SP={
+sed:{pu:2,id:800,rd:6200,wp:1.9,sub:.35,ro:3,dr:1.6,rf:220,rg:5,lp:600,lf:2.2,lt:700,ik:.02,v:.9},
+ela:{pu:2,id:800,rd:6400,wp:1.7,sub:.3,ro:4,dr:1.8,rf:260,rg:5,lp:700,lf:2.3,lt:800,ik:.025,v:.95},
+lan:{pu:2,id:850,rd:5800,wp:1.35,sub:.5,ro:11,dr:2.3,rf:300,rg:7,lp:650,lf:2.1,lt:900,ik:.05,v:1},
+m3:{pu:3,id:750,rd:7400,wp:1.15,sub:.25,ro:2,dr:2.6,rf:330,rg:6,lp:900,lf:2.8,lt:1100,ik:.03,tb:.25,bov:.25,pop:.6,v:1.05},
+cup:{pu:2,id:800,rd:6700,wp:1.25,sub:.35,ro:5,dr:2.4,rf:280,rg:6,lp:850,lf:2.6,lt:1100,ik:.03,tb:.6,bov:.6,pop:1,v:1.05},
+por:{pu:3,id:800,rd:7200,wp:1.2,sub:.3,ro:7,dr:2.3,rf:240,rg:6,lp:850,lf:2.6,lt:1000,ik:.03,tb:.35,bov:.3,pop:.8,v:1.05},
+lam:{pu:5,id:900,rd:8700,wp:.95,sub:.12,ro:1,dr:3,rf:450,rg:7,lp:1400,lf:3.2,lt:1500,ik:.05,pop:.6,v:1.1},
+fer:{pu:4,id:900,rd:8000,wp:.95,sub:.12,ro:1,dr:2.8,rf:420,rg:7,lp:1300,lf:3,lt:1400,ik:.03,tb:.3,ew:.35,bov:.3,pop:.7,v:1.1},
+bug:{pu:8,id:700,rd:6800,wp:1.5,sub:.45,ro:2,dr:2,rf:160,rg:8,lp:800,lf:2.2,lt:900,ik:.04,tb:.9,tbm:.55,bov:1,pop:.4,v:1.1},
+f1:{pu:5,id:3500,rd:15000,wp:.8,sub:.04,ro:0,dr:3.2,rf:900,rg:6,lp:2200,lf:3.5,lt:2000,ik:.02,ew:.2,v:1},
+own:{pu:6,id:800,rd:9000,wp:.9,sub:.1,ro:1,dr:2.8,rf:400,rg:6,lp:1500,lf:3,lt:1400,ik:.03,ew:.45,v:1.05}};
+function snd(){AC=new(window.AudioContext||window.webkitAudioContext)();
+const nb=AC.createBuffer(1,AC.sampleRate*2,AC.sampleRate),nd=nb.getChannelData(0);for(let i=0;i<nd.length;i++)nd[i]=Math.random()*2-1;
+const N=(f,q,ty)=>{const s=AC.createBufferSource();s.buffer=nb;s.loop=true;const b=AC.createBiquadFilter();b.type=ty||'bandpass';b.frequency.value=f;b.Q.value=q;const g=AC.createGain();g.gain.value=0;s.connect(b);b.connect(g);s.start(0,Math.random()*1.5);return{b,g}};
+const O=(ty,f)=>{const o=AC.createOscillator();o.type=ty;o.frequency.value=f;o.start();return o};
+gn=AC.createGain();gn.gain.value=0;gn.connect(AC.destination);
+const m1=O('sine',50),m2=O('triangle',25),l1=O('sine',6.3),l2=O('sine',9.7),lg=AC.createGain(),g1=AC.createGain(),g2=AC.createGain(),dr=AC.createGain(),ws=AC.createWaveShaper(),rs=AC.createBiquadFilter(),lp=AC.createBiquadFilter();
+lg.gain.value=0;l1.connect(lg);l2.connect(lg);lg.connect(m1.detune);lg.connect(m2.detune);
+const cv=new Float32Array(512);for(let i=0;i<512;i++)cv[i]=Math.tanh((i/256-1)*2);ws.curve=cv;
+rs.type='peaking';rs.Q.value=1.4;lp.type='lowpass';lp.Q.value=1.1;
+m1.connect(g1);m2.connect(g2);g1.connect(dr);g2.connect(dr);dr.connect(ws);ws.connect(rs);rs.connect(lp);lp.connect(gn);
+const ik=N(500,1.2),wh=N(3000,.8),rd=N(700,1),sq=N(2100,7),tw=O('sine',2000),twg=AC.createGain(),ew=O('sine',600),ewg=AC.createGain();
+twg.gain.value=0;ewg.gain.value=0;tw.connect(twg);twg.connect(gn);ew.connect(ewg);ewg.connect(gn);ik.g.connect(gn);wh.g.connect(gn);
+ng=rd.g;ng.connect(AC.destination);sq.g.connect(AC.destination);
+EN={m1,m2,lg,g1,g2,dr,rs,lp,ik,wh,tw,twg,ew,ewg,gs:sq.g,sqb:sq.b,nb,P:null,pw:{},th:0,b:0,off:9,prev:0,t0:0};osc=m1;AC.resume()}
+function popF(){const t=AC.currentTime,s=AC.createBufferSource();s.buffer=EN.nb;const b=AC.createBiquadFilter();b.type='bandpass';b.frequency.value=400+Math.random()*900;b.Q.value=.8;const g=AC.createGain(),a=1.4+Math.random()*1.6,d=.04+Math.random()*.07;
+g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(a,t+.004);g.gain.exponentialRampToValueAtTime(.001,t+d);s.connect(b);b.connect(g);g.connect(gn);s.start(t,Math.random()*1.5,d+.05);
+const o=AC.createOscillator(),og=AC.createGain();o.frequency.setValueAtTime(110,t);o.frequency.exponentialRampToValueAtTime(45,t+.08);og.gain.setValueAtTime(a*.5,t);og.gain.exponentialRampToValueAtTime(.001,t+.09);o.connect(og);og.connect(gn);o.start(t);o.stop(t+.1)}
+function bovF(a){const t=AC.currentTime,s=AC.createBufferSource();s.buffer=EN.nb;const b=AC.createBiquadFilter();b.type='highpass';b.frequency.value=2600;const g=AC.createGain();g.gain.setValueAtTime(a*1.2,t);g.gain.exponentialRampToValueAtTime(.001,t+.5);s.connect(b);b.connect(g);g.connect(gn);s.start(t,Math.random()*1.5,.6)}
+function snu(){const t=AC.currentTime,E=EN,now=performance.now(),dt=Math.min(.1,E.t0?(now-E.t0)/1000:.016);E.t0=now;
+const P=SP[car.f1?'f1':car.own?'own':car.t]||SP.sed;
+if(E.P!==P){E.P=P;const k=P.pu+'_'+P.wp;let w=E.pw[k];if(!w){const M=28,re=new Float32Array(M+1),im=new Float32Array(M+1);for(let h=1;h<=M;h++)im[h]=Math.pow(h,-P.wp);w=E.pw[k]=AC.createPeriodicWave(re,im)}E.m1.setPeriodicWave(w);E.g1.gain.value=1;E.g2.gain.value=P.sub;E.dr.gain.value=P.dr;E.rs.frequency.value=P.rf;E.rs.gain.value=P.rg;E.lg.gain.value=P.ro}
+const th=K.g&&S.fuel>0?1:0,rn=Math.max(0,S.rpm-900)/6100,rv=P.id+rn*(P.rd-P.id),f=rv/60*P.pu;
+E.th+=(th-E.th)*Math.min(1,dt*9);
+const tg=P.tb?th*Math.max(0,Math.min(1,(S.rpm-1800)/3200)):0;E.b+=(tg-E.b)*Math.min(1,dt*(tg>E.b?2:5));
+if(E.prev&&!th){E.off=0;if(P.bov&&E.b>.4&&S.v>3)bovF(P.bov*E.b)}if(!th)E.off+=dt;E.prev=th;
+if(!th&&P.pop&&E.off<2.6&&S.rpm>2400&&S.v>6&&Math.random()<dt*P.pop*9*(1-E.off/2.6))popF();
+E.m1.frequency.setTargetAtTime(f,t,.05);E.m2.frequency.setTargetAtTime(f/2,t,.05);
+E.lp.frequency.setTargetAtTime(P.lp+f*P.lf+E.th*P.lt,t,.06);
+const lim=!S.auto&&S.rpm>6950&&S.g<6&&th?((now/1000*24)%1<.5?1:.2):1,on=snOn&&S.fuel>0;
+gn.gain.setTargetAtTime(on?(.07+.1*E.th+.025*rn)*P.v*SD.vol*lim:0,t,lim<1?.01:.05);
+E.ik.b.frequency.setTargetAtTime(300+rv*.2,t,.1);E.ik.g.gain.setTargetAtTime(P.ik*8*(.3+.7*E.th)*rn,t,.08);
+E.tw.frequency.setTargetAtTime((1400+E.b*2600+rn*1500)*(P.tbm||1),t,.05);E.twg.gain.setTargetAtTime((P.tb||0)*.07*E.b,t,.05);
+E.wh.b.frequency.setTargetAtTime(2500+E.b*1500,t,.1);E.wh.g.gain.setTargetAtTime((P.tb||0)*.18*E.b,t,.08);
+E.ew.frequency.setTargetAtTime(500+Math.abs(S.v)*22,t,.08);E.ewg.gain.setTargetAtTime((P.ew||0)*.09*(.5+.5*E.th)*Math.min(1,Math.abs(S.v)/6),t,.08);
+ng.gain.setTargetAtTime(snOn?Math.min(.08,Math.abs(S.v)/80*.08)*SD.vol:0,t,.1);
+const sa=Math.abs(S.sa||0);E.sqb.frequency.setTargetAtTime(1700+sa*900,t,.1);E.gs.gain.setTargetAtTime(snOn&&Math.abs(S.v)>8&&!S.fly&&!(S.y>0)&&sa>.17?Math.min(.1,(sa-.17)*.35)*SD.vol:0,t,.06)}
 let mapOn=false,lp=null;const mc=$('mc'),mq=mc.getContext('2d'),MW=Math.max(XM,ZM);
 let MZ=1,MCX=0,MCZ=0,VX0=0,VX1=1e9,VZ0=0,VZ1=1e9;
 function vis(f){let a=1e9,b=1e9,c=-1e9,d=-1e9;for(let i=0;i<f.length;i+=2){const x=f[i],z=f[i+1];if(x<a)a=x;if(x>c)c=x;if(z<b)b=z;if(z>d)d=z}return c>=VX0&&a<=VX1&&d>=VZ0&&b<=VZ1}
@@ -416,7 +468,7 @@ const _u=upd;
 upd=function(dt){$('oc').style.display=car.own?'flex':'none';
 if(!car.own){S.y=0;S.vy=0;S.fly=false;_u(dt);return}
 if(!(S.fly||S.y>0)){_u(dt);if(K.nt&&K.g&&S.v>0)S.v=Math.min(260,S.v+75*dt)}
-else{const f=[-Math.sin(S.h),-Math.cos(S.h)],tg=K.w!==null?K.w:K.r-K.l;S.st+=(tg-S.st)*Math.min(1,dt*8);S.h-=S.st*1.4*dt;
+else{S.md=S.h;S.dr=0;const f=[-Math.sin(S.h),-Math.cos(S.h)],tg=K.w!==null?K.w:K.r-K.l;S.st+=(tg-S.st)*Math.min(1,dt*8);S.h-=S.st*1.4*dt;
 if(S.fly){const mx=K.nt?300:200;if(K.g||K.nt)S.v+=(K.nt?140:70)*dt;else S.v*=1-.25*dt;if(K.b)S.v-=90*dt;S.v=Math.max(0,Math.min(mx,S.v));S.ty=Math.max(3,Math.min(500,(S.ty||40)+(K.up?60:K.dn?-60:0)*dt));S.vy+=(Math.max(-45,Math.min(45,(S.ty-S.y)*1.5))-S.vy)*Math.min(1,dt*4)}else S.vy-=32*dt;
 S.y+=S.vy*dt;const nx=S.x+f[0]*S.v*dt,nz=S.z+f[1]*S.v*dt;
 if(S.y<24&&(solid(nx+f[0]*2.2,nz+f[1]*2.2)||solid(nx,nz)))S.v*=.3;else{S.x=Math.max(5,Math.min(XM-5,nx));S.z=Math.max(5,Math.min(ZM-5,nz))}
@@ -559,7 +611,7 @@ OO=[[1,'شغال'],[0,'مقفول']];
 const PG={g:()=>sRow('الجودة',sSeg('q',[['a','تلقائي'],['h','عالية'],['m','متوسطة'],['l','خفيفة']])+'<div class="sh">تلقائي: اللعبة بتنزّل الجودة لوحدها لو الموبايل بيهنج. خفيفة: من غير ظلال وأسرع حاجة.</div>')+sRow('الظلال',sSeg('sh',OO))+sRow('مدى الرؤية',sSeg('dist',[[.6,'قريب'],[1,'عادي'],[1.4,'بعيد']])+'<div class="sh">قريب = أسرع، بعيد = تشوف أبعد بس أتقل.</div>')+sRow('عدّاد FPS',sSeg('fps',[[1,'اظهر'],[0,'اخفي']])),
 c:()=>sRow('شكل التحكم',sSeg('ct',[['w','🎡 دريكسيون'],['a','◀ ▶ أسهم']]))+sRow('ناقل الحركة',sSeg('au',[[1,'أوتوماتيك'],[0,'مانوال']]))+sRow('الكاميرا',sSeg('cv',[[0,'من ورا'],[1,'من جوه']]))+sRow('حساسية الدريكسيون',sRng('sens',.5,1.6))+sRow('حجم الأزرار',sRng('size',.7,1.4))+sRow('مكان الأزرار',sSeg('swap',[[0,'عادي'],[1,'معكوس']])),
 s:()=>sRow('الصوت',sSeg('snd',OO))+sRow('مستوى صوت الموتور',sRng('vol',0,1.5))+sRow('🎤 المايك',sSeg('mic',OO)+'<div class="sh">بتسمع وتتكلم مع اللي قريب منك بس. لازم تسمح للمتصفح بالمايك.</div>')+sRow('مدى سماع الصوت',sSeg('vr',[[40,'قريب'],[80,'عادي'],[150,'بعيد']])+'<div class="sh">الصوت بيضعف كل ما تبعد لحد ما يختفي.</div>')+sRow('مستوى صوت اللاعبين',sRng('vv',0,1.5)),
-i:()=>'<div class="ins"><h4>🎮 التحكم بالموبايل</h4><p>🎡 الدريكسيون: لف العجلة بصباعك، ولما تسيبها بترجع لنصها. ◀ ▶: بتلف شمال ويمين. زرار <b>بنزين</b> بيمشّي العربية، و<b>فرامل/رجوع</b> بيفرمل وبعدين يرجّع.</p><p>⚙️ أوتو: الغيار بيتغير لوحده. مانوال: ▲ ▼ للغيار، و R للرجوع.</p><h4>⌨️ الكيبورد</h4><p>W أو ↑ بنزين · S أو ↓ فرامل · A D أو ◀ ▶ يمين وشمال · مسافة فرامل · E Q غيار فوق وتحت · M أوتو/مانوال · C كاميرا · R رجوع.</p><p>العربية الخاصة بس: F طيران · U J فوق وتحت · L شقلبة · N نيترو.</p><h4>🎯 المهام والفلوس</h4><p>اضغط <b>مهمة</b>، هيظهرلك زبون. اتبع السهم الأصفر واستلمه، وبعدين السهم الأخضر وصّله وخد فلوسك. الفلوس بتشتري بيها عربيات من الجراج.</p><h4>⛽ البنزين</h4><p>لو البنزين خلص العربية بتقف. فوق على الشاشة مكتوب أقرب بنزينة بالمتر، روحلها.</p><h4>🗺️ الخريطة</h4><p>اسحب للتحريك، بصباعين للتكبير، وضغطة مطولة على أي مكان عشان تنتقل له.</p><h4>👥 أونلاين</h4><p>اعمل غرفة وابعت الكود لصحابك، أو ادخل بكودهم. 🏁 سباق للتحدي، و🎁 لإرسال فلوس للاعب.</p><h4>🎤 المايك</h4><p>شغّله من زرار 🎤 فوق أو من الإعدادات. بتسمع اللي قريب منك بس، وصوته بيضعف كل ما تبعد لحد ما يختفي خالص. لازم تسمح للمتصفح بالمايك.</p></div>'};
+i:()=>'<div class="ins"><h4>🎮 التحكم بالموبايل</h4><p>🎡 الدريكسيون: لف العجلة بصباعك، ولما تسيبها بترجع لنصها. ◀ ▶: بتلف شمال ويمين. زرار <b>بنزين</b> بيمشّي العربية، و<b>فرامل/رجوع</b> بيفرمل وبعدين يرجّع. اضغط زرار <b>درفت</b> مرة يشتغل (بيتنوّر)، وبعدها لو ضغطت بنزين ولفيت العربية بتسلّك، واضغطه تاني يقفل.</p><p>⚙️ أوتو: الغيار بيتغير لوحده. مانوال: ▲ ▼ للغيار، و R للرجوع.</p><h4>⌨️ الكيبورد</h4><p>W أو ↑ بنزين · S أو ↓ فرامل · A D أو ◀ ▶ يمين وشمال · مسافة فرامل · Shift يشغّل/يقفل الدرفت · E Q غيار فوق وتحت · M أوتو/مانوال · C كاميرا · R رجوع.</p><p>العربية الخاصة بس: F طيران · U J فوق وتحت · L شقلبة · N نيترو.</p><h4>🎯 المهام والفلوس</h4><p>اضغط <b>مهمة</b>، هيظهرلك زبون. اتبع السهم الأصفر واستلمه، وبعدين السهم الأخضر وصّله وخد فلوسك. الفلوس بتشتري بيها عربيات من الجراج.</p><h4>⛽ البنزين</h4><p>لو البنزين خلص العربية بتقف. فوق على الشاشة مكتوب أقرب بنزينة بالمتر، روحلها.</p><h4>🗺️ الخريطة</h4><p>اسحب للتحريك، بصباعين للتكبير، وضغطة مطولة على أي مكان عشان تنتقل له.</p><h4>👥 أونلاين</h4><p>اعمل غرفة وابعت الكود لصحابك، أو ادخل بكودهم. 🏁 سباق للتحدي، و🎁 لإرسال فلوس للاعب.</p><h4>🎤 المايك</h4><p>شغّله من زرار 🎤 فوق أو من الإعدادات. بتسمع اللي قريب منك بس، وصوته بيضعف كل ما تبعد لحد ما يختفي خالص. لازم تسمح للمتصفح بالمايك.</p></div>'};
 let pgK='g';
 function cur(k){return k==='ct'?CT:k==='au'?(S.auto?1:0):k==='cv'?view:SD[k]}
 function stSync(){document.querySelectorAll('#stt button').forEach(b=>b.classList.toggle('on',b.dataset.t===pgK));document.querySelectorAll('#sbd .sg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.classList.toggle('on',String(cur(g.dataset.k))===b.dataset.v)));document.querySelectorAll('#sbd [data-r]').forEach(r=>r.value=SD[r.dataset.r])}
