@@ -269,11 +269,11 @@ document.querySelectorAll('#ak button').forEach(x=>{const k=x.dataset.a;x.addEve
 setCtl(CT);
 
 
-const hh=s=>{let h=2166136261;for(const ch of 'dmt'+s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}return h},CH=4218757069;
+const hh=s=>{let h=2166136261;for(const ch of 'dmt'+s){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)>>>0}return h},CH=4218757069,JH=2275980356;
 let un=false;try{un=localStorage.getItem('dm_u')===String(CH)}catch(e){}let ow=false;const CH2=2354049016;try{ow=localStorage.getItem('dm_o')===String(CH2);if(ow)un=true}catch(e){}
 function idb(cb,set){try{const q=indexedDB.open('dm',1);q.onupgradeneeded=()=>q.result.createObjectStore('k');q.onsuccess=()=>{const t=q.result.transaction('k',set?'readwrite':'readonly'),s=t.objectStore('k');if(set)s.put(set,'u');else{const g=s.get('u');g.onsuccess=()=>cb(g.result)}}}catch(e){}}
 idb(v=>{if(String(v)===String(CH)){un=true;rg()}});
-$('cb').onclick=()=>{if(hh($('ci').value.trim())===CH2){ow=un=true;try{localStorage.setItem('dm_o',String(CH2))}catch(e){}money=Math.max(money,999999999);sv();$('gfb').hidden=false;refreshTag();$('cm').textContent='أهلاً يا كحلة — اتفتحت كل العربيات + Kahla One 1/1'}else if(hh($('ci').value.trim())===CH){un=true;try{localStorage.setItem('dm_u',String(CH))}catch(e){}idb(null,String(CH));$('cm').textContent='تم التفعيل'}else $('cm').textContent='الكود غلط';$('ci').value='';rg()};
+$('cb').onclick=()=>{if(hh($('ci').value.trim())===CH2){ow=un=true;try{localStorage.setItem('dm_o',String(CH2))}catch(e){}money=Math.max(money,999999999);sv();$('gfb').hidden=false;refreshTag();$('cm').textContent='أهلاً يا كحلة — اتفتحت كل العربيات + Kahla One 1/1'}else if(hh($('ci').value.trim())===CH){un=true;try{localStorage.setItem('dm_u',String(CH))}catch(e){}idb(null,String(CH));$('cm').textContent='تم التفعيل'}else if(hh($('ci').value.trim().toLowerCase())===JH){let u2=false;try{u2=localStorage.getItem('dm_j')==='1'}catch(e){}if(u2)$('cm').textContent='الكود ده اتستخدم قبل كده';else{try{localStorage.setItem('dm_j','1')}catch(e){}money+=9e6;sv();$('cm').textContent='✅ اتضاف 9,000,000 للفلوس'}}else $('cm').textContent='الكود غلط';$('ci').value='';rg()};
 const PVL=[];let PVR=null,PVS=null,PVC=null;const PVM=new Map();
 try{PVR=new THREE.WebGLRenderer({alpha:true,antialias:true});PVR.setSize(240,135);PVS=new THREE.Scene();PVS.add(new THREE.HemisphereLight('#ffffff','#8890a0',1.05));const dl=new THREE.DirectionalLight('#fff4e0',.85);dl.position.set(3,6,5);PVS.add(dl);PVC=new THREE.PerspectiveCamera(32,240/135,.5,60);PVC.position.set(0,2.3,6.6);PVC.lookAt(0,.7,0)}catch(e){PVR=null}
 function pvModel(c){let m=PVM.get(c);if(!m){m=c.own?mkOwn():mk(c.c,c.f1,c.t);sc.remove(m);m.visible=false;PVS.add(m);PVM.set(c,m)}return m}
